@@ -68,6 +68,8 @@ srun --exclusive -N 2 -n 32 --distribution=block \
 
 A campanha que gerou o relatório usou `-w 320 -h 240 -s 64`, 10 repetições, nós atlantica03 e atlantica04, exclusivos. A granularidade escolhida foi `-g 1`, a de menor mediana em P = 32. P = 64 precisa de `srun -O`, porque a partição não deixa passar de 32 CPUs.
 
+A primeira submissão parou em P = 64: `--oversubscribe` não autoriza mais processos do que CPUs. `scripts/campaign_rest.sbatch` completou P = 64, a escalabilidade fraca e o probe. O aviso em `results/raw/stderr.txt` é dessa tentativa interrompida. As 150 execuções de `results/runs.csv` fecharam com o mesmo checksum.
+
 A campanha completa, sempre nos mesmos 2 nós:
 
 ```bash

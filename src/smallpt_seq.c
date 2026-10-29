@@ -78,11 +78,15 @@ int main(int argc, char **argv) {
     fflush(stdout);
 
     /* fora do tempo: so a primeira copia, para inspecionar a imagem */
+    int img_rc = 0;
     if (image_out) {
         FILE *f = fopen(image_out, "wb");
-        if (f) {
+        if (!f) {
+            fprintf(stderr, "erro ao abrir %s\n", image_out);
+            img_rc = 1;
+        } else {
             fprintf(f, "P6\n%d %d\n255\n", w, h);
-            for (int y = h - 1; y >= 0; --y) {
+            for (int y = h - 1; y >= 0 && !img_rc; --y) {
                 for (int x = 0; x < w; ++x) {
                     const double *p = img + ((size_t)y * (size_t)w + (size_t)x) * 3;
                     unsigned char rgb[3];
@@ -90,12 +94,14 @@ int main(int argc, char **argv) {
                         double v = p[c] < 0 ? 0 : (p[c] > 1 ? 1 : p[c]);
                         rgb[c] = (unsigned char)(pow(v, 1.0 / 2.2) * 255.0 + 0.5);
                     }
-                    fwrite(rgb, 1, 3, f);
+                    if (fwrite(rgb, 1, 3, f) != 3) img_rc = 1;
                 }
             }
-            fclose(f);
+            if (fclose(f) != 0) img_rc = 1;
+            if (img_rc) fprintf(stderr, "erro ao gravar %s\n", image_out);
         }
     }
     free(img);
-    return ok ? 0 : 3;
+    if (!ok) return 3;
+    return img_rc;
 }
