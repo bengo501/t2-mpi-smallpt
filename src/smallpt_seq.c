@@ -8,6 +8,7 @@
  */
 #define _POSIX_C_SOURCE 200809L
 #include "smallpt_api.h"
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -21,13 +22,14 @@ static double now_s(void) {
 
 static void usage(const char *argv0) {
     fprintf(stderr,
-            "uso: %s [-w W] [-h H] [-s SPP] [-g G] [--copies N] [--seed N]\n",
+            "uso: %s [-w W] [-h H] [-s SPP] [-g G] [--copies N] [--seed N] [--image ARQ.ppm]\n",
             argv0);
 }
 
 int main(int argc, char **argv) {
     int w = 320, h = 240, spp = 4, g = 1, copies = 1;
     uint64_t seed = 12345;
+    const char *image_out = NULL;
 
     for (int i = 1; i < argc; ++i) {
         if (!strcmp(argv[i], "-w") && i + 1 < argc) w = atoi(argv[++i]);
@@ -36,6 +38,7 @@ int main(int argc, char **argv) {
         else if (!strcmp(argv[i], "-g") && i + 1 < argc) g = atoi(argv[++i]);
         else if (!strcmp(argv[i], "--copies") && i + 1 < argc) copies = atoi(argv[++i]);
         else if (!strcmp(argv[i], "--seed") && i + 1 < argc) seed = (uint64_t)atoll(argv[++i]);
+        else if (!strcmp(argv[i], "--image") && i + 1 < argc) image_out = argv[++i];
         else if (!strcmp(argv[i], "--help")) { usage(argv[0]); return 0; }
         else { fprintf(stderr, "opcao desconhecida: %s\n", argv[i]); usage(argv[0]); return 2; }
     }
@@ -73,6 +76,26 @@ int main(int argc, char **argv) {
     printf("run,seq,1,%d,%d,%d,%d,%d,%.6f,%.17g,%d,%lld,%lld,%d\n",
            g, copies, w, h, spp, elapsed, checksum, ok, pixels, rays, tasks);
     fflush(stdout);
+
+    /* fora do tempo: so a primeira copia, para inspecionar a imagem */
+    if (image_out) {
+        FILE *f = fopen(image_out, "wb");
+        if (f) {
+            fprintf(f, "P6\n%d %d\n255\n", w, h);
+            for (int y = h - 1; y >= 0; --y) {
+                for (int x = 0; x < w; ++x) {
+                    const double *p = img + ((size_t)y * (size_t)w + (size_t)x) * 3;
+                    unsigned char rgb[3];
+                    for (int c = 0; c < 3; ++c) {
+                        double v = p[c] < 0 ? 0 : (p[c] > 1 ? 1 : p[c]);
+                        rgb[c] = (unsigned char)(pow(v, 1.0 / 2.2) * 255.0 + 0.5);
+                    }
+                    fwrite(rgb, 1, 3, f);
+                }
+            }
+            fclose(f);
+        }
+    }
     free(img);
     return ok ? 0 : 3;
 }

@@ -5,3 +5,5 @@ __pycache__/
 relatorio/*.aux
 relatorio/*.log
 relatorio/*.toc
+perguntas.md
+apresentacao/

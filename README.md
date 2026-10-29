@@ -4,6 +4,37 @@ Bernardo Klein Heitz (usuário LAD: cp33001)
 
 Versão paralela do path tracer do T1 (smallpt, Kevin Beason, 2008, reescrito em C11). Cada tarefa é um bloco de linhas da imagem. O processo 0 é o mestre e não renderiza.
 
+## A cena
+
+Cada pixel soma a luz de caminhos aleatórios. Mais amostras deixam a mesma cena mais limpa, e o custo cresce na mesma proporção. A campanha mediu a imagem da direita: 320×240, 64 amostras, 19.660.800 raios primários.
+
+![2 amostras por pixel](docs/figuras/spp2.png)
+![64 amostras por pixel, a entrada medida](docs/figuras/spp64.png)
+
+A imagem abaixo usa os mesmos 19.660.800 raios, em 160×120 com 256 amostras por pixel. Não entrou na campanha. Só mostra a cena com mais amostras em cada pixel.
+
+![mesma contagem de raios, mais amostras por pixel](docs/figuras/limpo.png)
+
+O checksum da imagem de 64 amostras é 52244.207718229489, o mesmo das 140 execuções paralelas. A figura abaixo é o caminho de um raio, não a imagem medida.
+
+![um raio primário, um reflexo e a luz](docs/figuras/caminho.png)
+
+Para gravar um PPM, fora do tempo medido:
+
+```bash
+srun --exclusive -N 1 -n 1 ./bin/smallpt_seq -w 320 -h 240 -s 64 -g 1 --image cena.ppm
+```
+
+## Como o trabalho é dividido
+
+O escravo pede a primeira linha. Quando devolve os pixels, essa mensagem já vale como o próximo pedido. O mestre não escolhe um escravo: atende quem chegar, com `MPI_ANY_SOURCE`, e guarda a linha em `task_of[rank]`.
+
+![quatro mensagens do protocolo](docs/figuras/protocolo.png)
+
+Uma tarefa é uma linha inteira. Partir a linha mudaria a semente. Com G = 1 ficam 240 tarefas para 31 escravos, de 7 a 9 linhas cada um. Com G = 16 ficam 15 tarefas, e 16 escravos não recebem nada.
+
+![saco de linhas e o efeito de G](docs/figuras/saco_de_linhas.png)
+
 ## Compilar
 
 No Atlântica, o `mpicc` não está no `PATH` do nó de login:
@@ -14,7 +45,7 @@ export LD_LIBRARY_PATH=/LADAPPs/OpenMPI/openmpi-4.1.1/lib:$LD_LIBRARY_PATH
 make
 ```
 
-As duas versões usam as mesmas flags: `-std=c11 -O3 -ffast-math -Wall -Wextra`.
+As duas versões usam as mesmas flags: `-std=c11 -O3 -ffast-math -Wall -Wextra`. O núcleo numérico é compilado uma vez com `gcc` e entra nos dois binários, para o checksum bater.
 
 ## Rodar
 
@@ -35,7 +66,7 @@ srun --exclusive -N 2 -n 32 --distribution=block \
     ./bin/smallpt_mpi -w 320 -h 240 -s 8 -g 4 --probe
 ```
 
-A campanha que gerou o relatório usou `-w 320 -h 240 -s 64`, 10 repetições, nós atlantica03 e atlantica04. A granularidade escolhida foi `-g 1`. P = 64 precisa de `srun -O`, porque a partição não deixa passar de 32 CPUs com `--oversubscribe`.
+A campanha que gerou o relatório usou `-w 320 -h 240 -s 64`, 10 repetições, nós atlantica03 e atlantica04, exclusivos. A granularidade escolhida foi `-g 1`, a de menor mediana em P = 32. P = 64 precisa de `srun -O`, porque a partição não deixa passar de 32 CPUs.
 
 A campanha completa, sempre nos mesmos 2 nós:
 
@@ -44,6 +75,20 @@ sbatch scripts/campaign.sbatch
 ```
 
 `W`, `H`, `SPP`, `REPS` e `G_LIST` podem ser passados na submissão, por exemplo `sbatch --export=ALL,W=320,H=240,SPP=8 scripts/campaign.sbatch`.
+
+## O que a campanha mostrou
+
+A referência sequencial, sem MPI, teve mediana 48,03 s (47,95 s a 48,20 s). O mestre não renderiza, então em 16 núcleos físicos o teto previsto era 15. Em P = 16 o speed-up foi 14,03.
+
+![speed-up forte, granularidade G = 1](results/speedup.png)
+
+P = 2 fica em 0,99 porque só existe um escravo. P = 32 sobe para 18,46, e não para 28: são 8 núcleos físicos com hyper-threading, e o ganho foi 1,32. P = 64 desce para 17,17, com dois processos por thread.
+
+![eficiência forte S/P e fraca T1/Tp](results/efficiency.png)
+
+Na escalabilidade fraca a mesma imagem é repetida P vezes. Os raios primários crescem exatamente com P, e o custo de uma linha não muda. A eficiência fraca acompanha a forte até P = 16 (0,88) e as duas caem juntas a partir do hyper-threading. Não é falta de tarefa.
+
+Uma linha custa 263 ms. A ida e volta da mensagem do mesmo tamanho (7680 bytes) custa 0,08 ms no mesmo nó e 0,35 ms no outro. As 240 mensagens somam cerca de 0,08 s, 3% dos 2,60 s de P = 32. Em G = 16 o tempo vai a 5,27 s porque faltam tarefas, não porque a mensagem ficou cara.
 
 ## Saída
 
@@ -54,6 +99,7 @@ Cada execução imprime uma linha `run,...` com tempo, checksum da primeira imag
 ```bash
 python3 scripts/summarize.py results/runs.csv
 python3 scripts/plot.py
+python3 docs/gerar_figuras.py
 ```
 
 Os tempos brutos de cada execução ficam em `results/raw/` e a saída do Slurm em `results/slurm-*.out`.
