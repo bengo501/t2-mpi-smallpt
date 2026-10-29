@@ -1,0 +1,2 @@
+srun: error: Unable to create step for job 41169: More processors requested than permitted
+ERRO de equivalencia forte P=64 rep=1

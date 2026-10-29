@@ -1,0 +1,16 @@
+run,mpi,16,1,16,320,240,64,54.466083,52244.207718229489,1,1228800,314572800,3840
+balance,1,256,54.406023,atlantica03
+balance,2,255,54.259949,atlantica03
+balance,3,256,54.309528,atlantica03
+balance,4,256,54.269382,atlantica03
+balance,5,257,54.385944,atlantica03
+balance,6,256,54.431630,atlantica03
+balance,7,256,54.278002,atlantica03
+balance,8,256,54.415446,atlantica04
+balance,9,256,54.387466,atlantica04
+balance,10,256,54.332421,atlantica04
+balance,11,256,54.400901,atlantica04
+balance,12,256,54.382376,atlantica04
+balance,13,256,54.366800,atlantica04
+balance,14,256,54.345119,atlantica04
+balance,15,256,54.406499,atlantica04

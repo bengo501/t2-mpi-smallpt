@@ -1,0 +1,95 @@
+rm -rf bin
+mkdir -p bin results results/raw
+cc -std=c11 -O3 -ffast-math -Wall -Wextra -Wno-unused-parameter -c -o bin/smallpt_render.o src/smallpt_render.c
+cc -std=c11 -O3 -ffast-math -Wall -Wextra -Wno-unused-parameter -o bin/smallpt_seq src/smallpt_seq.c bin/smallpt_render.o -lm
+cc -std=c11 -O3 -ffast-math -Wall -Wextra -Wno-unused-parameter -I/LADAPPs/OpenMPI/openmpi-4.1.1/include/openmpi -I/LADAPPs/OpenMPI/openmpi-4.1.1/include/openmpi/opal/mca/event/libevent2022/libevent -I/LADAPPs/OpenMPI/openmpi-4.1.1/include/openmpi/opal/mca/event/libevent2022/libevent/include -I/LADAPPs/OpenMPI/openmpi-4.1.1/include -pthread -c -o bin/smallpt_mpi.o src/smallpt_mpi.c
+mpicc -o bin/smallpt_mpi bin/smallpt_mpi.o bin/smallpt_render.o -lm
+atlantica[03-04]
+=== sequencial de referencia (10 reps) ===
+seq rep 1
+seq rep 2
+seq rep 3
+seq rep 4
+seq rep 5
+seq rep 6
+seq rep 7
+seq rep 8
+seq rep 9
+seq rep 10
+checksum de referencia: 52244.207718229489
+=== granularidade em P=32 ===
+gran P=32 g=1 rep 1
+gran P=32 g=1 rep 2
+gran P=32 g=1 rep 3
+gran P=32 g=1 rep 4
+gran P=32 g=1 rep 5
+gran P=32 g=1 rep 6
+gran P=32 g=1 rep 7
+gran P=32 g=1 rep 8
+gran P=32 g=1 rep 9
+gran P=32 g=1 rep 10
+gran P=32 g=4 rep 1
+gran P=32 g=4 rep 2
+gran P=32 g=4 rep 3
+gran P=32 g=4 rep 4
+gran P=32 g=4 rep 5
+gran P=32 g=4 rep 6
+gran P=32 g=4 rep 7
+gran P=32 g=4 rep 8
+gran P=32 g=4 rep 9
+gran P=32 g=4 rep 10
+gran P=32 g=16 rep 1
+gran P=32 g=16 rep 2
+gran P=32 g=16 rep 3
+gran P=32 g=16 rep 4
+gran P=32 g=16 rep 5
+gran P=32 g=16 rep 6
+gran P=32 g=16 rep 7
+gran P=32 g=16 rep 8
+gran P=32 g=16 rep 9
+gran P=32 g=16 rep 10
+1
+granularidade escolhida: 1
+=== escalabilidade forte (copies=1, g=1) ===
+forte P=2 rep 1
+forte P=2 rep 2
+forte P=2 rep 3
+forte P=2 rep 4
+forte P=2 rep 5
+forte P=2 rep 6
+forte P=2 rep 7
+forte P=2 rep 8
+forte P=2 rep 9
+forte P=2 rep 10
+forte P=4 rep 1
+forte P=4 rep 2
+forte P=4 rep 3
+forte P=4 rep 4
+forte P=4 rep 5
+forte P=4 rep 6
+forte P=4 rep 7
+forte P=4 rep 8
+forte P=4 rep 9
+forte P=4 rep 10
+forte P=8 rep 1
+forte P=8 rep 2
+forte P=8 rep 3
+forte P=8 rep 4
+forte P=8 rep 5
+forte P=8 rep 6
+forte P=8 rep 7
+forte P=8 rep 8
+forte P=8 rep 9
+forte P=8 rep 10
+forte P=16 rep 1
+forte P=16 rep 2
+forte P=16 rep 3
+forte P=16 rep 4
+forte P=16 rep 5
+forte P=16 rep 6
+forte P=16 rep 7
+forte P=16 rep 8
+forte P=16 rep 9
+forte P=16 rep 10
+forte P=64 rep 1
+ERRO de equivalencia forte P=64 rep=1

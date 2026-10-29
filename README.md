@@ -35,7 +35,9 @@ srun --exclusive -N 2 -n 32 --distribution=block \
     ./bin/smallpt_mpi -w 320 -h 240 -s 8 -g 4 --probe
 ```
 
-A campanha completa (10 repetições, forte, fraca, granularidade e probe), sempre nos mesmos 2 nós:
+A campanha que gerou o relatório usou `-w 320 -h 240 -s 64`, 10 repetições, nós atlantica03 e atlantica04. A granularidade escolhida foi `-g 1`. P = 64 precisa de `srun -O`, porque a partição não deixa passar de 32 CPUs com `--oversubscribe`.
+
+A campanha completa, sempre nos mesmos 2 nós:
 
 ```bash
 sbatch scripts/campaign.sbatch

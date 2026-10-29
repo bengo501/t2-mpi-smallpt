@@ -47,7 +47,10 @@ one_mpi() {
     local p="$1" g="$2" copies="$3" log="$4"
     local extra=()
     if [ "$p" -gt 32 ]; then
-        extra=(--oversubscribe)
+        # -O (overcommit) permite mais processos do que CPUs.
+        # --oversubscribe e' outra coisa: dividir o no com outro job,
+        # e a particao LAD_geral nao permite.
+        extra=(-O)
     fi
     srun "${extra[@]}" -N 2 -n "$p" --distribution=block \
         "$MPI" -w "$W" -h "$H" -s "$SPP" -g "$g" --copies "$copies" \

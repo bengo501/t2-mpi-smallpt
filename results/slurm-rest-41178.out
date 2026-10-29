@@ -1,0 +1,86 @@
+G=1 REF=52244.207718229489 nodes=atlantica[03-04]
+=== forte P=64 ===
+forte P=64 rep 1
+forte P=64 rep 2
+forte P=64 rep 3
+forte P=64 rep 4
+forte P=64 rep 5
+forte P=64 rep 6
+forte P=64 rep 7
+forte P=64 rep 8
+forte P=64 rep 9
+forte P=64 rep 10
+=== fraca ===
+fraca P=2 rep 1
+fraca P=2 rep 2
+fraca P=2 rep 3
+fraca P=2 rep 4
+fraca P=2 rep 5
+fraca P=2 rep 6
+fraca P=2 rep 7
+fraca P=2 rep 8
+fraca P=2 rep 9
+fraca P=2 rep 10
+fraca P=4 rep 1
+fraca P=4 rep 2
+fraca P=4 rep 3
+fraca P=4 rep 4
+fraca P=4 rep 5
+fraca P=4 rep 6
+fraca P=4 rep 7
+fraca P=4 rep 8
+fraca P=4 rep 9
+fraca P=4 rep 10
+fraca P=8 rep 1
+fraca P=8 rep 2
+fraca P=8 rep 3
+fraca P=8 rep 4
+fraca P=8 rep 5
+fraca P=8 rep 6
+fraca P=8 rep 7
+fraca P=8 rep 8
+fraca P=8 rep 9
+fraca P=8 rep 10
+fraca P=16 rep 1
+fraca P=16 rep 2
+fraca P=16 rep 3
+fraca P=16 rep 4
+fraca P=16 rep 5
+fraca P=16 rep 6
+fraca P=16 rep 7
+fraca P=16 rep 8
+fraca P=16 rep 9
+fraca P=16 rep 10
+fraca P=32 rep 1
+fraca P=32 rep 2
+fraca P=32 rep 3
+fraca P=32 rep 4
+fraca P=32 rep 5
+fraca P=32 rep 6
+fraca P=32 rep 7
+fraca P=32 rep 8
+fraca P=32 rep 9
+fraca P=32 rep 10
+fraca P=64 rep 1
+fraca P=64 rep 2
+fraca P=64 rep 3
+fraca P=64 rep 4
+fraca P=64 rep 5
+fraca P=64 rep 6
+fraca P=64 rep 7
+fraca P=64 rep 8
+fraca P=64 rep 9
+fraca P=64 rep 10
+=== probe ===
+probe rep 1
+probe rep 2
+probe rep 3
+probe rep 4
+probe rep 5
+probe rep 6
+probe rep 7
+probe rep 8
+probe rep 9
+probe rep 10
+=== fim rest ===
+Wed Oct 28 21:08:34 -03 2026
